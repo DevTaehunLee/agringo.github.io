@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,184 +8,322 @@
 
 <style>
 
-/* CSS 전부 여기 */
-
 body{
     margin:0;
     font-family:Arial,sans-serif;
+    background:#f6fff0;
 }
 
-/* 이하 CSS */
+header{
+    background:#58CC02;
+    color:white;
+    padding:20px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.progress-container{
+    width:300px;
+    background:#ddd;
+    height:20px;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress{
+    width:0%;
+    height:100%;
+    background:white;
+    transition:.5s;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    padding:40px;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.question{
+    font-size:1.5rem;
+    margin-bottom:30px;
+}
+
+.answer{
+    display:block;
+    width:100%;
+    padding:15px;
+    margin:10px 0;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    background:#f2f2f2;
+    font-size:1rem;
+}
+
+.answer:hover{
+    background:#e6e6e6;
+}
+
+.stats{
+    margin-top:20px;
+    display:flex;
+    gap:20px;
+    font-weight:bold;
+}
+
+.correct{
+    background:#8be28b !important;
+}
+
+.wrong{
+    background:#ff8f8f !important;
+}
+
+.finish{
+    text-align:center;
+}
 
 </style>
-
 </head>
-
 <body>
 
-<!-- HTML 전부 여기 -->
+<header>
+
+<div class="topbar">
+
+<div>
+<h2>🌱 AGRINGO</h2>
+</div>
+
+<div class="progress-container">
+<div class="progress" id="progress"></div>
+</div>
+
+</div>
+
+</header>
+
+<div class="container">
+
+<div class="card" id="quizCard">
+
+<h2 id="level">Level 1 Farmer</h2>
+
+<div class="stats">
+<div>⭐ XP: <span id="xp">0</span></div>
+<div>❤️ Lives: <span id="lives">5</span></div>
+</div>
+
+<br>
+
+<div class="question" id="question"></div>
+
+<div id="answers"></div>
+
+</div>
+
+</div>
+
+<script>
+
+const questions = [
+
+{
+question:"What do plants need most to grow?",
+answers:["Plastic","Water","Metal","Sand"],
+correct:1
+},
+
+{
+question:"Which crop grows underground?",
+answers:["Corn","Potato","Rice","Tomato"],
+correct:1
+},
+
+{
+question:"What is used to water crops?",
+answers:["Irrigation","Battery","Plastic","Concrete"],
+correct:0
+},
+
+{
+question:"Which is a fruit?",
+answers:["Potato","Tomato","Stone","Rice"],
+correct:1
+},
+
+{
+question:"Why is soil important?",
+answers:[
+"It supports plant growth",
+"It makes music",
+"It creates electricity",
+"It cooks food"
+],
+correct:0
+}
+
+];
+
+let currentQuestion=0;
+let xp=0;
+let lives=5;
+
+const questionEl=document.getElementById("question");
+const answersEl=document.getElementById("answers");
+
+function loadQuestion(){
+
+if(currentQuestion>=questions.length){
+
+showFinish();
+return;
+
+}
+
+const q=questions[currentQuestion];
+
+questionEl.innerText=q.question;
+
+answersEl.innerHTML="";
+
+q.answers.forEach((answer,index)=>{
+
+const btn=document.createElement("button");
+
+btn.className="answer";
+btn.innerText=answer;
+
+btn.onclick=()=>checkAnswer(index);
+
+answersEl.appendChild(btn);
+
+});
+
+updateProgress();
+
+}
+
+function checkAnswer(selected){
+
+const q=questions[currentQuestion];
+
+const buttons=document.querySelectorAll(".answer");
+
+if(selected===q.correct){
+
+buttons[selected].classList.add("correct");
+
+xp+=10;
+
+}else{
+
+buttons[selected].classList.add("wrong");
+
+buttons[q.correct].classList.add("correct");
+
+lives--;
+
+}
+
+document.getElementById("xp").innerText=xp;
+document.getElementById("lives").innerText=lives;
+
+const level=Math.floor(xp/30)+1;
+
+document.getElementById("level").innerText=
+"Level "+level+" Farmer";
+
+if(lives<=0){
+
+showGameOver();
+return;
+
+}
+
+setTimeout(()=>{
+
+currentQuestion++;
+loadQuestion();
+
+},1000);
+
+}
+
+function updateProgress(){
+
+const percent=
+(currentQuestion/questions.length)*100;
+
+document.getElementById("progress").style.width=
+percent+"%";
+
+}
+
+function showFinish(){
+
+document.getElementById("quizCard").innerHTML=`
+
+<div class="finish">
+
+<h1>🎉 Harvest Complete!</h1>
+
+<h2>Final XP: ${xp}</h2>
+
+<p>You completed the Agringo lesson.</p>
+
+<button onclick="location.reload()"
+class="answer">
+
+Play Again
+
+</button>
+
+</div>
+
+`;
+
+document.getElementById("progress").style.width="100%";
+
+}
+
+function showGameOver(){
+
+document.getElementById("quizCard").innerHTML=`
+
+<div class="finish">
+
+<h1>💀 Farm Failed</h1>
+
+<h2>Out of Lives</h2>
+
+<button onclick="location.reload()"
+class="answer">
+
+Try Again
+
+</button>
+
+</div>
+
+`;
+
+}
+
+loadQuestion();
+
+</script>
 
 </body>
-
 </html>
-
-
-<!-- HERO -->
-
-<section class="hero">
-
-    <div class="hero-content">
-
-        <h1>🌱 AGRINGO</h1>
-
-        <h2>The Duolingo of Agriculture</h2>
-
-        <p>
-            Learn farming through quests, collect crops,
-            earn XP, and build your own virtual farm.
-        </p>
-
-        <a href="#xp" class="btn">Start Farming</a>
-
-    </div>
-
-</section>
-
-<!-- XP SECTION -->
-
-<section id="xp">
-
-    <h2 class="section-title">Farmer Progress</h2>
-
-    <div class="progress-card">
-
-        <h3>Level 12 Farmer</h3>
-
-        <div class="progress-bar">
-            <div class="progress-fill"></div>
-        </div>
-
-        <p>2,450 / 3,000 XP</p>
-
-    </div>
-
-</section>
-
-<!-- STREAK SECTION -->
-
-<section>
-
-    <h2 class="section-title">🔥 Current Streak</h2>
-
-    <div class="streak-container">
-
-        <div class="streak-card">
-            <h3>7 Days</h3>
-            <p>Seed Starter</p>
-        </div>
-
-        <div class="streak-card">
-            <h3>30 Days</h3>
-            <p>Soil Expert</p>
-        </div>
-
-        <div class="streak-card">
-            <h3>100 Days</h3>
-            <p>Master Farmer</p>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- QUESTS -->
-
-<section>
-
-    <h2 class="section-title">Today's Quests</h2>
-
-    <div class="grid">
-
-        <div class="card">
-            <h3>🌱 Learn Soil Basics</h3>
-            <p>Reward: 50 XP</p>
-        </div>
-
-        <div class="card">
-            <h3>🍅 Grow Your First Tomato</h3>
-            <p>Reward: 500 XP</p>
-        </div>
-
-        <div class="card">
-            <h3>🚜 Visit a Local Farm</h3>
-            <p>Reward: 1000 XP</p>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- CROP COLLECTION -->
-
-<section>
-
-    <h2 class="section-title">Crop Collection</h2>
-
-    <div class="grid">
-
-        <div class="crop">🍅 Tomato</div>
-        <div class="crop">🌽 Corn</div>
-        <div class="crop">🥔 Potato</div>
-        <div class="crop">🍓 Strawberry</div>
-        <div class="crop">🥕 Carrot</div>
-        <div class="crop">🌾 Rice</div>
-
-    </div>
-
-</section>
-
-<!-- LEADERBOARD -->
-
-<section>
-
-    <h2 class="section-title">🏆 Leaderboard</h2>
-
-    <div class="leaderboard">
-
-        <div class="leader">
-            <span>#1</span>
-            <span>Alex</span>
-            <span>15,240 XP</span>
-        </div>
-
-        <div class="leader">
-            <span>#2</span>
-            <span>Emma</span>
-            <span>14,920 XP</span>
-        </div>
-
-        <div class="leader">
-            <span>#3</span>
-            <span>Noah</span>
-            <span>14,100 XP</span>
-        </div>
-
-        <div class="leader highlight">
-            <span>#8</span>
-            <span>You</span>
-            <span>9,850 XP</span>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- FOOTER -->
-
-<footer>
-
-    <h2>🌱 AGRINGO</h2>
-
-    <p>Learn. Grow. Harvest.</p>
-
-</footer>
