@@ -41,10 +41,37 @@ header{
     transition:.5s;
 }
 
-.container{
-    max-width:800px;
-    margin:auto;
+.main-layout{
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    gap:30px;
     padding:40px;
+}
+
+.sidebar{
+    width:280px;
+}
+
+.info-card{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+    margin-bottom:20px;
+}
+
+.info-card h3{
+    margin-top:0;
+    color:#58CC02;
+}
+
+.info-card p{
+    line-height:1.6;
+}
+
+.container{
+    width:800px;
 }
 
 .card{
@@ -69,6 +96,7 @@ header{
     cursor:pointer;
     background:#f2f2f2;
     font-size:1rem;
+    transition:.2s;
 }
 
 .answer:hover{
@@ -94,6 +122,25 @@ header{
     text-align:center;
 }
 
+@media(max-width:1200px){
+
+    .main-layout{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .sidebar{
+        width:100%;
+        max-width:800px;
+    }
+
+    .container{
+        width:100%;
+        max-width:800px;
+    }
+
+}
+
 </style>
 </head>
 <body>
@@ -114,6 +161,29 @@ header{
 
 </header>
 
+<div class="main-layout">
+
+<!-- LEFT SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="info-card" id="storyCard">
+<h3>👩‍🌾 Farmer Story</h3>
+<p>Loading...</p>
+</div>
+
+<div class="info-card">
+<h3>🌍 Why Agriculture Matters</h3>
+<p>
+Agriculture provides food, creates jobs,
+and supports communities around the world.
+</p>
+</div>
+
+</div>
+
+<!-- CENTER QUIZ -->
+
 <div class="container">
 
 <div class="card" id="quizCard">
@@ -130,6 +200,27 @@ header{
 <div class="question" id="question"></div>
 
 <div id="answers"></div>
+
+</div>
+
+</div>
+
+<!-- RIGHT SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="info-card" id="careerCard">
+<h3>🚜 Career Explorer</h3>
+<p>Loading...</p>
+</div>
+
+<div class="info-card">
+<h3>📈 Future Opportunity</h3>
+<p>
+Smart farming is one of the fastest-growing
+technology sectors in agriculture.
+</p>
+</div>
 
 </div>
 
@@ -176,12 +267,86 @@ correct:0
 
 ];
 
+const farmerStories = [
+
+{
+title:"👩‍🌾 Farmer Story",
+text:"Sarah Kim began farming at age 24 after studying engineering. Today she operates an AI-powered greenhouse."
+},
+
+{
+title:"🌱 Young Farmer",
+text:"James Lee left city life and now manages a hydroponic lettuce farm using smart sensors."
+},
+
+{
+title:"🚜 Smart Agriculture",
+text:"Maria uses drones and satellite imagery to monitor crop health across 50 hectares."
+},
+
+{
+title:"🍅 Urban Farming",
+text:"Daniel grows vegetables on rooftops in Seoul and supplies local restaurants."
+},
+
+{
+title:"🌾 Sustainable Farming",
+text:"Emma reduced water use by 40% through precision irrigation and data analytics."
+}
+
+];
+
+const careers = [
+
+{
+title:"🚜 Agricultural Engineer",
+text:"Designs agricultural robots, irrigation systems, and autonomous farming equipment."
+},
+
+{
+title:"🤖 Smart Farm Specialist",
+text:"Uses AI, IoT sensors, and data to improve productivity."
+},
+
+{
+title:"🌱 Agronomist",
+text:"Studies crops, soil, and sustainable farming techniques."
+},
+
+{
+title:"🛰️ Drone Operator",
+text:"Uses drones for crop monitoring, mapping, and disease detection."
+},
+
+{
+title:"📊 Agricultural Data Scientist",
+text:"Analyzes farm data to help farmers make better decisions."
+}
+
+];
+
 let currentQuestion=0;
 let xp=0;
 let lives=5;
 
 const questionEl=document.getElementById("question");
 const answersEl=document.getElementById("answers");
+
+function updateSidePanels(){
+
+document.getElementById("storyCard").innerHTML=
+`
+<h3>${farmerStories[currentQuestion].title}</h3>
+<p>${farmerStories[currentQuestion].text}</p>
+`;
+
+document.getElementById("careerCard").innerHTML=
+`
+<h3>${careers[currentQuestion].title}</h3>
+<p>${careers[currentQuestion].text}</p>
+`;
+
+}
 
 function loadQuestion(){
 
@@ -191,6 +356,8 @@ showFinish();
 return;
 
 }
+
+updateSidePanels();
 
 const q=questions[currentQuestion];
 
